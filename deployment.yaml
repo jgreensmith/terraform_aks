@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: weenie-container
-        image: thecontainerregistry.azurecr.io/weenie-image:latest
+        image: contyreggers.azurecr.io/weenie-image:latest
         ports:
         - containerPort: 80
 ---

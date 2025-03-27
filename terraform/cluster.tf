@@ -10,6 +10,15 @@
 #   principal_id         = azurerm_user_assigned_identity.base.principal_id
 # }
 
+resource "azurerm_container_registry" "this" {
+  name                = "contyreggers"  # Must be globally unique
+  resource_group_name = var.resource_group_name
+  location            = var.resource_group_location  # Adjust the region as necessary
+  sku                  = "Basic"  # Other options are "Standard" and "Premium"
+
+}
+
+
 resource "azurerm_kubernetes_cluster" "this" {
     name                = var.cluster_name
     location            = azurerm_resource_group.this.location
@@ -17,7 +26,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     dns_prefix          = "tfcluster"
 
     kubernetes_version        = var.kubernetes_version
-    automatic_upgrade_channel = "none"
+    // automatic_upgrade_channel = "none"
     private_cluster_enabled   = false
     node_resource_group       = "${azurerm_resource_group.this.name}-${var.cluster_name}-nodes"
 
@@ -51,11 +60,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "spot" {
   priority              = "Spot"
   spot_max_price        = -1
   eviction_policy       = "Delete"
-
-  auto_scaling_enabled = true
-  node_count          = 1
-  min_count           = 1
-  max_count           = 1
+  node_count            = 1
 
   node_labels = {
     "kubernetes.azure.com/scalesetpriority" = "spot"
@@ -65,5 +70,12 @@ resource "azurerm_kubernetes_cluster_node_pool" "spot" {
     "kubernetes.azure.com/scalesetpriority=spot:NoSchedule"
   ]
 
+}
+
+resource "azurerm_role_assignment" "this" {
+  principal_id                     = azurerm_kubernetes_cluster.this.kubelet_identity[0].object_id
+  role_definition_name             = "AcrPull"
+  scope                            = azurerm_container_registry.this.id
+  skip_service_principal_aad_check = true
 }
 

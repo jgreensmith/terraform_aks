@@ -5,10 +5,10 @@ set -e
 
 # Retrieve Azure credentials from 1Password CLI
 # echo "Fetching Azure credentials from 1Password..."
-# AZURE_CLIENT_ID=$(op read op://Private/azure_sp/client_id)
-# AZURE_CLIENT_SECRET=$(op read op://Private/azure_sp/client_secret)
-# AZURE_TENANT_ID=$(op read op://Private/azure_sp/tenant_id)
-# AZURE_SUBSCRIPTION_ID=$(op read op://Private/azure_sp/subscription_id)
+export ARM_CLIENT_ID=$(op read op://Private/azure_sp/client_id)
+export ARM_CLIENT_SECRET=$(op read op://Private/azure_sp/client_secret)
+export ARM_TENANT_ID=$(op read op://Private/azure_sp/tenant_id)
+export ARM_SUBSCRIPTION_ID=$(op read op://Private/azure_sp/subscription_id)
 
 # # Export Azure credentials as environment variables
 # export ARM_CLIENT_ID=$AZURE_CLIENT_ID
